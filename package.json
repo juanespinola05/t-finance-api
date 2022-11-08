@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "tsc": "tsc",
     "migrations": "sequelize-cli db:migrate",
     "migrations:generate": "sequelize-cli migration:generate --name",
     "migrations:undo": "sequelize-cli db:migrate:undo",
@@ -27,22 +28,23 @@
   },
   "homepage": "https://github.com/juanespinola05/t-finance-api#readme",
   "dependencies": {
-    "@hapi/boom": "^10.0.0",
-    "bcrypt": "^5.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "joi": "^17.7.0",
-    "jsonwebtoken": "^8.5.1",
-    "pg": "^8.8.0",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.25.4"
+    "@hapi/boom": "10.0.0",
+    "bcrypt": "5.1.0",
+    "cors": "2.8.5",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "joi": "17.7.0",
+    "jsonwebtoken": "8.5.1",
+    "pg": "8.8.0",
+    "pg-hstore": "2.3.4",
+    "sequelize": "6.25.4"
   },
   "devDependencies": {
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.20",
-    "sequelize-cli": "^6.5.2",
-    "standard": "^17.0.0"
+    "morgan": "1.10.0",
+    "nodemon": "2.0.20",
+    "sequelize-cli": "6.5.2",
+    "standard": "17.0.0",
+    "typescript": "4.8.4"
   },
   "eslintConfig": {
     "extends": [
