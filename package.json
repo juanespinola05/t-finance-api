@@ -5,7 +5,15 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "migrations": "sequelize-cli db:migrate",
+    "migrations:generate": "sequelize-cli migration:generate --name",
+    "migrations:undo": "sequelize-cli db:migrate:undo",
+    "migrations:delete": "sequelize-cli db:migrate:undo:all",
+    "seed": "sequelize-cli db:seed:all",
+    "seed:generate": "sequelize-cli seed:generate --name",
+    "seed:undo": "sequelize-cli db:seed:undo",
+    "seed:delete": "sequelize-cli db:seed:undo:all"
   },
   "repository": {
     "type": "git",
@@ -33,6 +41,7 @@
   "devDependencies": {
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
+    "sequelize-cli": "^6.5.2",
     "standard": "^17.0.0"
   },
   "eslintConfig": {
