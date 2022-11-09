@@ -1,8 +1,8 @@
 import boom from '@hapi/boom'
-import { Request, Response, NextFunction } from 'express'
-import { Schema } from 'joi'
+import { Request, Response, NextFunction, RequestHandler } from 'express'
+import { ObjectSchema } from 'joi'
 
-const validateSchema = (schema: Schema, field: string = 'body'): Function => {
+const validateSchema = (schema: ObjectSchema, field: string = 'body'): RequestHandler => {
   return (req: Request, _res: Response, next: NextFunction) => {
     const { error } = schema.validate(req[field as keyof Request])
     if (error != null) {
