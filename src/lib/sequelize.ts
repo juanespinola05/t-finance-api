@@ -1,10 +1,10 @@
-const { Sequelize } = require('sequelize')
-const { DB_URL, ENV } = require('../config/')
-const setupModels = require('../db/models')
+import { Sequelize } from 'sequelize'
+import { DB_URL, ENV } from '../config/'
+import setupModels from '../db/models'
 
-const isProduction = ENV === 'production'
+const isProduction: boolean = ENV === 'production'
 
-const config = {
+const config: any = {
   dialect: 'postgres',
   logging: isProduction ? false : console.log
 }
@@ -17,8 +17,8 @@ if (isProduction) {
   }
 }
 
-const sequelize = new Sequelize(DB_URL, config)
+const sequelize: Sequelize = new Sequelize(DB_URL, config)
 
-setupModels(sequelize)
+void setupModels(sequelize)
 
-module.exports = sequelize
+export default sequelize
