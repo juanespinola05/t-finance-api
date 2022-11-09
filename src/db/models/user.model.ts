@@ -1,8 +1,8 @@
-const { DataTypes, Model } = require('sequelize')
+import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize'
 
-const TABLE_NAME = 'users'
+const TABLE_NAME: string = 'users'
 
-const userSchema = {
+const userSchema: Object = {
   id: {
     allowNull: false,
     primaryKey: true,
@@ -33,10 +33,19 @@ const userSchema = {
   }
 }
 
-class User extends Model {
-  static associate (models) {}
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>
+  declare name: string
+  declare email: string
+  declare password: string
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
 
-  static config (sequelize) {
+  static associate (_models: Model[]): void {
+
+  }
+
+  static config (sequelize: Sequelize): Object {
     return {
       sequelize,
       tableName: TABLE_NAME,
