@@ -2,7 +2,7 @@ import fs from 'fs'
 import { Sequelize } from 'sequelize'
 
 async function setupModels (sequelize: Sequelize): Promise<void> {
-  const files = fs.readdirSync(__dirname).filter(file => file.endsWith('.model.js'))
+  const files = fs.readdirSync(__dirname).filter(file => file.endsWith('.model.ts'))
 
   for (const file of files) {
     const { model, schema } = await import(`./${file}`)

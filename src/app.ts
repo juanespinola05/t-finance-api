@@ -7,6 +7,7 @@ import logError from './middlewares/logError.handler'
 import handleSQLError from './middlewares/SQLError.handler'
 import handleBoomError from './middlewares/boomError.handler'
 import handleError from './middlewares/error.handler'
+import setupRoutes from './routes'
 
 const app: Application = express()
 
@@ -14,6 +15,8 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+
+setupRoutes(app)
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('T-Finanance API')
