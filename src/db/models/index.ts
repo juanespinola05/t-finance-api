@@ -1,17 +1,9 @@
-import fs from 'fs'
+// import fs from 'fs'
 import { Sequelize } from 'sequelize'
+import { User, userSchema } from './user.model'
 
 async function setupModels (sequelize: Sequelize): Promise<void> {
-  const files = fs.readdirSync(__dirname).filter(file => file.endsWith('.model.ts'))
-
-  for (const file of files) {
-    const { model, schema } = await import(`./${file}`)
-    model.init(schema, model.config(sequelize))
-  }
-  for (const file of files) {
-    const { model } = await import(`./${file}`)
-    model.associate(sequelize.models)
-  }
+  User.init(userSchema, User.config(sequelize))
 }
 
 export default setupModels
