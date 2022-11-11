@@ -1,8 +1,8 @@
-import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize'
+import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional, ModelAttributes, InitOptions } from 'sequelize'
 
 const TABLE_NAME: string = 'users'
 
-const userSchema: Object = {
+export const userSchema: ModelAttributes = {
   id: {
     allowNull: false,
     primaryKey: true,
@@ -33,7 +33,7 @@ const userSchema: Object = {
   }
 }
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>
   declare name: string
   declare email: string
@@ -45,7 +45,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   }
 
-  static config (sequelize: Sequelize): Object {
+  static config (sequelize: Sequelize): InitOptions {
     return {
       sequelize,
       tableName: TABLE_NAME,
@@ -53,10 +53,4 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
       timestamps: true
     }
   }
-}
-
-module.exports = {
-  tableName: TABLE_NAME,
-  schema: userSchema,
-  model: User
 }

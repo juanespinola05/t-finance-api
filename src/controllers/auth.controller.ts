@@ -12,3 +12,16 @@ export const registerController = async (req: Request, res: Response, next: Next
     next(error)
   }
 }
+
+export const loginController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req
+  try {
+    const loginData = await service.login(body)
+    res.status(200).json({
+      ok: true,
+      ...loginData
+    })
+  } catch (error) {
+    next(error)
+  }
+}

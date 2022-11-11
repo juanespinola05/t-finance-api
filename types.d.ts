@@ -1,3 +1,5 @@
+import { Model } from 'sequelize'
+
 export interface User {
   id: number
   name: string
@@ -7,4 +9,7 @@ export interface User {
   updatedAt: Date
 }
 
+export type UserModel = User & Model | null
+
 export type UserCreationAttributes = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
+export type UserLoginAttributes = Pick<User, 'email' | 'password'>
