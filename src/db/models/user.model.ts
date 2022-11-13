@@ -41,8 +41,11 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
-  static associate (_models: Model[]): void {
-
+  static associate (sequelize: Sequelize): void {
+    this.hasMany(sequelize.models.Operation, {
+      as: 'operations',
+      foreignKey: 'userId'
+    })
   }
 
   static config (sequelize: Sequelize): InitOptions {
