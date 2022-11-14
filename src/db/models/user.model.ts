@@ -1,4 +1,5 @@
-import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional, ModelAttributes, InitOptions } from 'sequelize'
+import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional, ModelAttributes, InitOptions, HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManySetAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association, NonAttribute } from 'sequelize'
+import { Operation } from './operation.model'
 
 const TABLE_NAME: string = 'users'
 
@@ -40,6 +41,23 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare password: string
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
+
+  declare getOperations: HasManyGetAssociationsMixin<Operation>
+  declare addOperation: HasManyAddAssociationMixin<Operation, number>
+  declare addOperations: HasManyAddAssociationsMixin<Operation, number>
+  declare setOperations: HasManySetAssociationsMixin<Operation, number>
+  declare removeOperation: HasManyRemoveAssociationMixin<Operation, number>
+  declare removeOperations: HasManyRemoveAssociationsMixin<Operation, number>
+  declare hasOperation: HasManyHasAssociationMixin<Operation, number>
+  declare hasOperations: HasManyHasAssociationsMixin<Operation, number>
+  declare countOperations: HasManyCountAssociationsMixin
+  declare createOperation: HasManyCreateAssociationMixin<Operation, 'userId'>
+
+  declare operations?: NonAttribute<Operation[]>
+
+  declare static associations: {
+    operations: Association<User, Operation>
+  }
 
   static associate (sequelize: Sequelize): void {
     this.hasMany(sequelize.models.Operation, {
