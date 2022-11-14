@@ -50,11 +50,22 @@ export const operationSchema: ModelAttributes = {
     type: DataTypes.INTEGER,
     field: 'user_id',
     references: {
-      model: 'operations',
+      model: 'users',
       key: 'id'
     },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
+  },
+  categoryId: {
+    allowNull: true,
+    type: DataTypes.INTEGER,
+    field: 'category_id',
+    references: {
+      model: 'categories',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   }
 }
 
@@ -65,6 +76,7 @@ export class Operation extends Model<InferAttributes<Operation>, InferCreationAt
   declare date: Date
   declare type: string
   declare userId: ForeignKey<User['id']>
+  declare categoryId: ForeignKey<User['id']>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
   declare deletedAt: CreationOptional<Date>
@@ -72,6 +84,9 @@ export class Operation extends Model<InferAttributes<Operation>, InferCreationAt
   static associate (sequelize: Sequelize): void {
     this.belongsTo(sequelize.models.User, {
       as: 'user'
+    })
+    this.belongsTo(sequelize.models.Category, {
+      as: 'category'
     })
   }
 
