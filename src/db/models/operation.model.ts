@@ -1,4 +1,5 @@
-import { ModelAttributes, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, InitOptions, Sequelize } from 'sequelize'
+import { ModelAttributes, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, InitOptions, Sequelize, ForeignKey } from 'sequelize'
+import { User } from './user.model'
 
 export const TABLE_NAME = 'operations'
 
@@ -63,6 +64,7 @@ export class Operation extends Model<InferAttributes<Operation>, InferCreationAt
   declare amount: number
   declare date: Date
   declare type: string
+  declare userId: ForeignKey<User['id']>
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
   declare deletedAt: CreationOptional<Date>
