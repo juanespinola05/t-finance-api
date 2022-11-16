@@ -4,10 +4,12 @@ import { ObjectSchema } from 'joi'
 
 const validateSchema = (schema: ObjectSchema, field: string = 'body'): RequestHandler => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[field as keyof Request])
+    const { error } = schema.validate(req[field as keyof Request], { abortEarly: false })
     if (error != null) {
-      // TODO: return schema errors
-      throw boom.badRequest('Not valid schema xd')
+      const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' })
+      const details = error.details.map(detail => detail.message)
+      const message = formatter.format(details)
+      throw boom.badRequest(message)
     }
     next()
   }
