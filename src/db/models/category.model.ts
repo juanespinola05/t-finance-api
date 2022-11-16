@@ -17,7 +17,8 @@ export const categorySchema: ModelAttributes = {
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW,
+    field: 'created_at'
   }
 }
 

@@ -12,7 +12,7 @@ export const operationSchema: ModelAttributes = {
   },
   concept: {
     allowNull: false,
-    type: DataTypes.INTEGER
+    type: DataTypes.STRING
   },
   amount: {
     allowNull: false,

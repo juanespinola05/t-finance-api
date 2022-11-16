@@ -12,7 +12,7 @@ module.exports = {
       },
       concept: {
         allowNull: false,
-        type: Sequelize.DataTypes.INTEGER
+        type: Sequelize.DataTypes.STRING
       },
       amount: {
         allowNull: false,
@@ -55,6 +55,17 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
+      },
+      categoryId: {
+        allowNull: true,
+        type: Sequelize.DataTypes.INTEGER,
+        field: 'category_id',
+        references: {
+          model: 'categories',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       }
     })
   },
