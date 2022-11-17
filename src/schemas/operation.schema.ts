@@ -7,3 +7,11 @@ export const postOperation = Joi.object({
   category: Joi.string().required(),
   date: Joi.date().required()
 })
+
+export const getOperationsByMonth = Joi.object({
+  month: Joi.number().min(0).max(11) // january: 0 december: 11
+})
+
+export const typeQueryParam = Joi.object({
+  type: Joi.string().pattern(/income|outflow/i)
+})

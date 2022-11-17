@@ -1,6 +1,8 @@
 import boom from '@hapi/boom'
-import { OperationCreationAttributes, User } from '../../types'
+import { Op, WhereOptions } from 'sequelize'
+import { OperationCreationAttributes, OperationOutput, User } from '../../types'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
+import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
 import sequelize from '../lib/sequelize'
 
@@ -29,5 +31,37 @@ export default class OperationService {
       await transaction.rollback()
       throw boom.serverUnavailable(SERVER_UNAVAILABLE)
     }
+  }
+
+  async findByMonth (user: User, month: number, type: string): Promise<OperationOutput[]> {
+    const currentYear = new Date().getFullYear()
+    const monthToUse = months[month]
+    const monthName = monthNames[month]
+    const fromDate = new Date(`${monthName} 01, ${currentYear} 00:00:00`)
+    const toDate = new Date(`${monthName} ${monthToUse}, ${currentYear} 23:59:59`)
+
+    const whereOptions: WhereOptions = {
+      userId: user.id,
+      date: {
+        [Op.lt]: toDate,
+        [Op.gt]: fromDate
+      }
+    }
+
+    if (['outflow', 'income'].includes(type)) {
+      whereOptions.type = type
+    }
+
+    const operations = await sequelize.models.Operation.findAll({
+      where: whereOptions
+    })
+    return operations.map(({ dataValues: { id, concept, amount, type, date, createdAt } }) => ({
+      id,
+      concept,
+      amount,
+      type,
+      date,
+      createdAt
+    }))
   }
 }
