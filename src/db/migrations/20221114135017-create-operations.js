@@ -50,7 +50,7 @@ module.exports = {
         type: Sequelize.DataTypes.INTEGER,
         field: 'user_id',
         references: {
-          model: 'operations',
+          model: 'users',
           key: 'id'
         },
         onUpdate: 'CASCADE',
