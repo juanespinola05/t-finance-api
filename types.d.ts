@@ -42,6 +42,7 @@ export interface CategoryOutput extends Required<Category> {}
 export type UserCreationAttributes = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
 export type UserLoginAttributes = Pick<User, 'email' | 'password'>
 export type OperationCreationAttributes = Pick<Operation, 'concept' | 'type' | 'amount' | 'date'> & { category: string }
+export type OperationOutput = Pick<Operation, 'concept' | 'amount' | 'date' | 'createdAt' | 'id' | 'type'>
 
 type UserPayload = Pick<User, 'email'>
 declare global {
