@@ -1,6 +1,6 @@
 import boom from '@hapi/boom'
 import { Op, WhereOptions } from 'sequelize'
-import { OperationCreationAttributes, OperationOutput, User } from '../../types'
+import { OperationCreationAttributes, OperationOutput, OperationType, User } from '../../types'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
@@ -10,7 +10,7 @@ export default class OperationService {
   async create (data: OperationCreationAttributes, user: User): Promise<Operation> {
     const transaction = await sequelize.transaction()
     let category: any
-    if (data.type === 'outflow') {
+    if (data.type === OperationType.OUTFLOW) {
       category = await sequelize.models.Category.findOne({
         transaction,
         where: {

@@ -1,3 +1,8 @@
+
+export const enum OperationType {
+  INCOME = 'income',
+  OUTFLOW = 'outflow'
+}
 export interface User {
   id: number
   name: string
@@ -10,7 +15,7 @@ export interface User {
 export interface Operation {
   id: number
   concept: string
-  type: 'income' | 'outflow'
+  type: OperationType
   amount: number
   date: Date
   userId: number
