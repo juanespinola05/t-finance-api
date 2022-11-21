@@ -15,3 +15,7 @@ export const getOperationsByMonth = Joi.object({
 export const typeQueryParam = Joi.object({
   type: Joi.string().pattern(/income|outflow/i)
 })
+
+export const getOperation = Joi.object({
+  id: Joi.number().integer().required()
+})

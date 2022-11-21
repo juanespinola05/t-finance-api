@@ -64,4 +64,36 @@ export default class OperationService {
       createdAt
     }))
   }
+
+  async get (operationId: number, user: User): Promise<OperationOutput> {
+    const operation = await sequelize.models.Operation.findOne({
+      where: {
+        id: operationId,
+        userId: user.id
+      },
+      include: ['category'] // todo return category as well
+    })
+    if (operation === null) {
+      throw boom.notFound('Operation not found')
+    }
+    const {
+      dataValues: {
+        id,
+        concept,
+        amount,
+        type,
+        date,
+        createdAt
+      }
+    } = operation
+
+    return {
+      id,
+      concept,
+      amount,
+      type,
+      date,
+      createdAt
+    }
+  }
 }

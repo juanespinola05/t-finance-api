@@ -30,3 +30,17 @@ export const getOperationsByMonthController = async (req: Request, res: Response
     next(error)
   }
 }
+
+export const getOperationController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { user } = req
+  const { id } = req.params
+  try {
+    const operation = await service.get(+id, user)
+    res.status(200).json({
+      ok: true,
+      data: operation
+    })
+  } catch (error) {
+    next(error)
+  }
+}
