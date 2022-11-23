@@ -96,4 +96,13 @@ export default class OperationService {
       createdAt
     }
   }
+
+  async delete (id: string, user: User): Promise<void> {
+    await sequelize.models.Operation.destroy({
+      where: {
+        id,
+        userId: user.id
+      }
+    })
+  }
 }
