@@ -9,22 +9,25 @@ import sequelize from '../lib/sequelize'
 const { models } = sequelize
 export default class OperationService {
   async create (data: OperationCreationAttributes, user: User): Promise<Operation> {
+    const isOutflow = data.type === OperationType.OUTFLOW
     const transaction = await sequelize.transaction()
     let category: any
-    if (data.type === OperationType.OUTFLOW) {
+    if (isOutflow) {
       category = await models.Category.findOne({
         transaction,
         where: {
           tagname: data.category
         }
       })
+      if (category === null) throw boom.notFound('Category not found')
     }
-    if (category === null) throw boom.notFound('Category not found')
     const operation = await models.Operation.create({
       ...data,
       userId: user.id
     }, { transaction })
-    await category.addOperation(operation as Operation, { transaction })
+
+    isOutflow && await category.addOperation(operation as Operation, { transaction })
+
     try {
       await transaction.commit()
       return operation.dataValues as Operation

@@ -1,5 +1,6 @@
 import Joi, { CustomHelpers, CustomValidator } from 'joi'
 import { OperationType } from '../../types'
+import { INCOME_REQUIREMENTS, OUTFLOW_REQUIREMENTS } from '../constants/messages'
 
 const concept = Joi.string().min(1)
 const amount = Joi.number()
@@ -17,16 +18,22 @@ export const postOperation = Joi.object({
 const method: CustomValidator = (data, _helpers: CustomHelpers) => {
   const validOutflowOperation =
     data?.type === OperationType.OUTFLOW &&
-    data?.amount >= 0 &&
-    data?.category !== undefined
+    (data?.amount >= 0 || data?.category === undefined)
 
   if (validOutflowOperation) {
-    throw new Error('Outflow operations must have negative amounts')
+    throw new Error(OUTFLOW_REQUIREMENTS)
   }
+
+  const validIncomeOperation = data?.type === OperationType.INCOME && data?.amount <= 0
+
+  if (validIncomeOperation) {
+    throw new Error(INCOME_REQUIREMENTS)
+  }
+
   return data
 }
 
-export const postOutflowOperation = Joi.object().custom(method, 'Custom validation')
+export const postOperationFields = Joi.object().custom(method, 'Custom validation')
 
 export const getOperationsByMonth = Joi.object({
   month: Joi.number().min(0).max(11) // january: 0 december: 11
