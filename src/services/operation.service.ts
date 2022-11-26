@@ -1,17 +1,18 @@
 import boom from '@hapi/boom'
-import { Op, WhereOptions } from 'sequelize'
-import { OperationCreationAttributes, OperationOutput, OperationType, User } from '../../types'
+import { FindOptions, Model, Op, WhereOptions } from 'sequelize'
+import { OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
 import sequelize from '../lib/sequelize'
 
+const { models } = sequelize
 export default class OperationService {
   async create (data: OperationCreationAttributes, user: User): Promise<Operation> {
     const transaction = await sequelize.transaction()
     let category: any
     if (data.type === OperationType.OUTFLOW) {
-      category = await sequelize.models.Category.findOne({
+      category = await models.Category.findOne({
         transaction,
         where: {
           tagname: data.category
@@ -19,7 +20,7 @@ export default class OperationService {
       })
     }
     if (category === null) throw boom.notFound('Category not found')
-    const operation = await sequelize.models.Operation.create({
+    const operation = await models.Operation.create({
       ...data,
       userId: user.id
     }, { transaction })
@@ -52,7 +53,7 @@ export default class OperationService {
       whereOptions.type = type
     }
 
-    const operations = await sequelize.models.Operation.findAll({
+    const operations = await models.Operation.findAll({
       where: whereOptions
     })
     return operations.map(({ dataValues: { id, concept, amount, type, date, createdAt } }) => ({
@@ -66,11 +67,7 @@ export default class OperationService {
   }
 
   async get (operationId: number, user: User): Promise<OperationOutput> {
-    const operation = await sequelize.models.Operation.findOne({
-      where: {
-        id: operationId,
-        userId: user.id
-      },
+    const operation = await this.findOne(operationId, user, {
       include: ['category'] // todo return category as well
     })
     if (operation === null) {
@@ -98,11 +95,23 @@ export default class OperationService {
   }
 
   async delete (id: string, user: User): Promise<void> {
-    await sequelize.models.Operation.destroy({
+    await models.Operation.destroy({
       where: {
         id,
         userId: user.id
       }
     })
   }
+
+  async findOne (operationId: number, user?: User, options: FindOptions = {}): Promise<Model<Operation> | null> {
+    options.where = {
+      id: operationId
+    }
+    if (user !== undefined) {
+      options.where.userId = user.id
+    }
+    const operation = await models.Operation.findOne(options)
+    return operation
+  }
+
 }
