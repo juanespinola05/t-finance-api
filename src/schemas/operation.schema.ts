@@ -1,11 +1,16 @@
 import Joi from 'joi'
 
+const concept = Joi.string().min(1)
+const amount = Joi.number()
+const type = Joi.string().pattern(/income|outflow/mi)
+const date = Joi.date()
+
 export const postOperation = Joi.object({
-  concept: Joi.string().min(1).required(),
-  amount: Joi.date().required(),
-  type: Joi.string().pattern(/income|outflow/mi).required(),
+  concept: concept.required(),
+  amount: amount.required(),
+  type: type.required(),
   category: Joi.string().required(),
-  date: Joi.date().required()
+  date: date.required()
 })
 
 export const getOperationsByMonth = Joi.object({
@@ -18,4 +23,11 @@ export const typeQueryParam = Joi.object({
 
 export const getOperation = Joi.object({
   id: Joi.number().integer().required()
+})
+
+export const updateOperation = Joi.object({
+  concept,
+  amount,
+  type,
+  date
 })
