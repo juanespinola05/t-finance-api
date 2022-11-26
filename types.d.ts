@@ -73,3 +73,8 @@ declare global {
     }
   }
 }
+export const enum BalanceRange {
+  LAST_MONTH = 'lastmonth',
+  LAST_WEEK = 'lastweek',
+  THIS_MONTH = 'thismonth'
+}
