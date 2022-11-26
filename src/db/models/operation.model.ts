@@ -76,7 +76,7 @@ export class Operation extends Model<InferAttributes<Operation>, InferCreationAt
   declare date: Date
   declare type: string
   declare userId: ForeignKey<User['id']>
-  declare categoryId: ForeignKey<User['id']>
+  declare categoryId: ForeignKey<User['id']> | null
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
   declare deletedAt: CreationOptional<Date>
