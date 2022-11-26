@@ -55,3 +55,14 @@ export const deleteOperationController = async (req: Request, res: Response, nex
     next(error)
   }
 }
+
+export const updateOperationController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params
+  const { user, body } = req
+  try {
+    const updated = await service.update(+id, user, body)
+    res.status(200).json(updated)
+  } catch (error) {
+    next(error)
+  }
+}

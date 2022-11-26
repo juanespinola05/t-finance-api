@@ -114,4 +114,19 @@ export default class OperationService {
     return operation
   }
 
+  async update (operationId: number, user: User, data: OperationUpdateInput): Promise<boolean> {
+    const operation = await this.findOne(operationId, user)
+    if (operation == null) {
+      throw boom.notFound('Operation not found')
+    }
+    if (data.type === OperationType.INCOME) {
+      data.categoryId = null
+    }
+    const affectedRows = await models.Operation.update(data, {
+      where: {
+        id: operationId
+      }
+    })
+    return affectedRows[0] !== 0
+  }
 }
