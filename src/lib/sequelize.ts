@@ -1,10 +1,10 @@
-import { Sequelize } from 'sequelize'
+import { Options, Sequelize } from 'sequelize'
 import { DB_URL, ENV } from '../config/'
 import setupModels from '../db/models'
 
 const isProduction: boolean = ENV === 'production'
 
-const config: any = {
+const config: Options = {
   dialect: 'postgres',
   logging: isProduction ? false : console.log
 }
