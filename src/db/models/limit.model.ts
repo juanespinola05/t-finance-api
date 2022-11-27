@@ -10,7 +10,7 @@ export const limitSchema: ModelAttributes = {
     autoIncrement: true
   },
   amount: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.FLOAT
   },
   createdAt: {
     allowNull: false,
@@ -24,6 +24,7 @@ export const limitSchema: ModelAttributes = {
     field: 'updated_at'
   },
   userId: {
+    unique: true,
     allowNull: false,
     type: DataTypes.INTEGER,
     field: 'user_id',

@@ -11,7 +11,7 @@ module.exports = {
         autoIncrement: true
       },
       amount: {
-        type: Sequelize.DataTypes.DECIMAL
+        type: Sequelize.DataTypes.FLOAT
       },
       createdAt: {
         allowNull: false,
@@ -25,6 +25,7 @@ module.exports = {
         field: 'updated_at'
       },
       userId: {
+        unique: true,
         allowNull: false,
         type: Sequelize.DataTypes.INTEGER,
         field: 'user_id',
