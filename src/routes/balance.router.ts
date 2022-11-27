@@ -6,7 +6,7 @@ import { getBalanceController } from '../controllers/balance.controller'
 import attachUser from '../middlewares/attachUser'
 import validateJWT from '../middlewares/validateJWT'
 import validateSchema from '../middlewares/validateSchema'
-import { getBalanceSchema } from './balance.schema'
+import { getBalanceSchema } from '../schemas/balance.schema'
 
 const router = express.Router()
 
