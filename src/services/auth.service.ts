@@ -40,7 +40,7 @@ export default class AuthService {
 
   generateJWT (payload: Object): string {
     const token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: '24h'
+      expiresIn: '1 year' // todo: temp
     })
     return token
   }
