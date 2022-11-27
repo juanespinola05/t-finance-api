@@ -14,6 +14,10 @@ export const categorySchema: ModelAttributes = {
     allowNull: false,
     type: DataTypes.STRING
   },
+  color: {
+    allowNull: false,
+    type: DataTypes.STRING(7)
+  },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,

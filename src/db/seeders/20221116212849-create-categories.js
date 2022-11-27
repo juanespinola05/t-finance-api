@@ -5,21 +5,25 @@ module.exports = {
       {
         id: 1,
         tagname: 'personal',
+        color: '#ff9238',
         created_at: new Date()
       },
       {
         id: 2,
         tagname: 'food',
+        color: '#ff9238',
         created_at: new Date()
       },
       {
         id: 3,
         tagname: 'expenses',
+        color: '#ff9238',
         created_at: new Date()
       },
       {
         id: 4,
         tagname: 'house',
+        color: '#ff9238',
         created_at: new Date()
       }
     ], {})

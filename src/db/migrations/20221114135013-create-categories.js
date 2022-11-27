@@ -14,6 +14,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DataTypes.STRING
       },
+      color: {
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING(7)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DataTypes.DATE,
