@@ -82,3 +82,8 @@ export const enum BalanceRange {
 export interface LimitAttributes {
   amount: number
 }
+
+export interface Balance {
+  income: number
+  outflow: number
+}

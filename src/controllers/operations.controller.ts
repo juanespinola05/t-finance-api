@@ -72,8 +72,19 @@ export const getBalanceController = async (req: Request, res: Response, next: Ne
   const { range } = req.query
   const { user } = req
   try {
-    const balance = await service.getBalance(range as BalanceRange, user)
-    res.status(200).json({ balance })
+    const { income, outflow } = await service.getBalances(range as BalanceRange, user)
+    res.status(200).json({ income, outflow })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getGeneralBalanceController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { user } = req
+  try {
+    const balance = await service.getGeneralBalance(user)
+    console.log(balance)
+    res.status(200).json(balance)
   } catch (error) {
     next(error)
   }

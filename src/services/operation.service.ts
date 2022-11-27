@@ -1,6 +1,6 @@
 import boom from '@hapi/boom'
 import { FindOptions, Model, Op, WhereOptions } from 'sequelize'
-import { BalanceRange, OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
+import { Balance, BalanceRange, OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
@@ -134,20 +134,44 @@ export default class OperationService {
     return affectedRows[0] !== 0
   }
 
-  async getBalance (range: BalanceRange = BalanceRange.THIS_MONTH, user: User): Promise<number> {
+  async getBalances (range: BalanceRange = BalanceRange.THIS_MONTH, user: User): Promise<Balance> {
     const { from, to } = generateDates(range)
-
     // TODO: return something different if there are no operations to make balance cuac
 
-    const balance = await models.Operation.sum('amount', {
+    const options: WhereOptions = {
+      userId: user.id,
+      date: {
+        [Op.gte]: from,
+        [Op.lte]: to
+      }
+    }
+
+    const totalIncome = await models.Operation.sum('amount', {
       where: {
-        userId: user.id,
-        date: {
-          [Op.gte]: from,
-          [Op.lte]: to
-        }
+        ...options,
+        type: OperationType.INCOME
       }
     })
-    return balance
+
+    const totalOutflow = await models.Operation.sum('amount', {
+      where: {
+        ...options,
+        type: OperationType.OUTFLOW
+      }
+    })
+
+    return {
+      income: totalIncome,
+      outflow: totalOutflow
+    }
+  }
+
+  async getGeneralBalance (user: User): Promise<any> {
+    const { income, outflow } = await this.getBalances(BalanceRange.THIS_MONTH, user)
+    return {
+      balance: income + outflow,
+      income,
+      outflow
+    }
   }
 }
