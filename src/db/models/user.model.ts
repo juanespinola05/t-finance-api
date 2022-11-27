@@ -1,4 +1,29 @@
-import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional, ModelAttributes, InitOptions, HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManySetAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association, NonAttribute } from 'sequelize'
+import {
+  Sequelize,
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ModelAttributes,
+  InitOptions,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManySetAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  Association,
+  NonAttribute,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+  HasOneCreateAssociationMixin
+} from 'sequelize'
+import { Limit } from './limit.model'
 import { Operation } from './operation.model'
 
 const TABLE_NAME: string = 'users'
@@ -53,6 +78,10 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare countOperations: HasManyCountAssociationsMixin
   declare createOperation: HasManyCreateAssociationMixin<Operation, 'userId'>
 
+  declare getLimit: HasOneGetAssociationMixin<Limit>
+  declare setLimit: HasOneSetAssociationMixin<Limit, number>
+  declare createLimit: HasOneCreateAssociationMixin<Limit>
+
   declare operations?: NonAttribute<Operation[]>
 
   declare static associations: {
@@ -62,6 +91,10 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   static associate (sequelize: Sequelize): void {
     this.hasMany(sequelize.models.Operation, {
       as: 'operations',
+      foreignKey: 'userId'
+    })
+    this.hasOne(sequelize.models.Limit, {
+      as: 'limit',
       foreignKey: 'userId'
     })
   }
