@@ -78,3 +78,7 @@ export const enum BalanceRange {
   LAST_WEEK = 'lastweek',
   THIS_MONTH = 'thismonth'
 }
+
+export interface LimitAttributes {
+  amount: number
+}
