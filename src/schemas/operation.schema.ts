@@ -53,3 +53,7 @@ export const updateOperation = Joi.object({
   type,
   date
 })
+
+export const getBalanceSchema = Joi.object({
+  range: Joi.string().pattern(/lastmonth|thismonth|lastweek/mi)
+})

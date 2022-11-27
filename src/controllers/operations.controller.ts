@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { BalanceRange } from '../../types'
 import OperationService from '../services/operation.service'
 
 const service = new OperationService()
@@ -62,6 +63,17 @@ export const updateOperationController = async (req: Request, res: Response, nex
   try {
     const updated = await service.update(+id, user, body)
     res.status(200).json(updated)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getBalanceController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { range } = req.query
+  const { user } = req
+  try {
+    const balance = await service.getBalance(range as BalanceRange, user)
+    res.status(200).json({ balance })
   } catch (error) {
     next(error)
   }

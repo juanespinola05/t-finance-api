@@ -1,9 +1,10 @@
 import boom from '@hapi/boom'
 import { FindOptions, Model, Op, WhereOptions } from 'sequelize'
-import { OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
+import { BalanceRange, OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
+import generateDates from '../helpers/generateDates'
 import sequelize from '../lib/sequelize'
 
 const { models } = sequelize
@@ -131,5 +132,22 @@ export default class OperationService {
       }
     })
     return affectedRows[0] !== 0
+  }
+
+  async getBalance (range: BalanceRange = BalanceRange.THIS_MONTH, user: User): Promise<number> {
+    const { from, to } = generateDates(range)
+
+    // TODO: return something different if there are no operations to make balance cuac
+
+    const balance = await models.Operation.sum('amount', {
+      where: {
+        userId: user.id,
+        date: {
+          [Op.gte]: from,
+          [Op.lte]: to
+        }
+      }
+    })
+    return balance
   }
 }
