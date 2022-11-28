@@ -1,5 +1,5 @@
 import Joi, { CustomHelpers, CustomValidator } from 'joi'
-import { OperationType } from '../../types'
+import { OperationType } from '../types/operation.model'
 import { INCOME_REQUIREMENTS, OUTFLOW_REQUIREMENTS } from '../constants/messages'
 
 const concept = Joi.string().min(1)

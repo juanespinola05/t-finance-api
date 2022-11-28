@@ -1,5 +1,5 @@
 import { ModelAttributes, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, InitOptions, Sequelize, ForeignKey } from 'sequelize'
-import { OperationType } from '../../../types'
+import { OperationType } from '../../types/operation.model'
 import { User } from './user.model'
 
 export const TABLE_NAME = 'operations'

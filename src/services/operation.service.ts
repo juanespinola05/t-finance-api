@@ -1,15 +1,17 @@
 import boom from '@hapi/boom'
 import { FindOptions, Model, Op, WhereOptions } from 'sequelize'
-import { Balance, BalanceRange, OperationCreationAttributes, OperationOutput, OperationType, OperationUpdateInput, User } from '../../types'
+import { BalanceRange } from '../../types'
+import { Balance, CreateOperationDto, OperationOutputBase, OperationType, OperationUpdateInput } from '../types/operation.model'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
 import { Operation } from '../db/models/operation.model'
 import generateDates from '../helpers/generateDates'
 import sequelize from '../lib/sequelize'
+import { UserAttributes } from '../types/user.model'
 
 const { models } = sequelize
 export default class OperationService {
-  async create (data: OperationCreationAttributes, user: User): Promise<Operation> {
+  async create (data: CreateOperationDto, user: UserAttributes): Promise<Operation> {
     const isOutflow = data.type === OperationType.OUTFLOW
     const transaction = await sequelize.transaction()
     let category: any
@@ -38,7 +40,7 @@ export default class OperationService {
     }
   }
 
-  async findByMonth (user: User, month: number, type: string): Promise<OperationOutput[]> {
+  async findByMonth (user: UserAttributes, month: number, type: string): Promise<OperationOutputBase[]> {
     const currentYear = new Date().getFullYear()
     const monthToUse = months[month]
     const monthName = monthNames[month]
@@ -70,7 +72,7 @@ export default class OperationService {
     }))
   }
 
-  async get (operationId: number, user: User): Promise<OperationOutput> {
+  async get (operationId: number, user: UserAttributes): Promise<OperationOutputBase> {
     const operation = await this.findOne(operationId, user, {
       include: ['category'] // todo return category as well
     })
@@ -98,7 +100,7 @@ export default class OperationService {
     }
   }
 
-  async delete (id: string, user: User): Promise<void> {
+  async delete (id: string, user: UserAttributes): Promise<void> {
     await models.Operation.destroy({
       where: {
         id,
@@ -107,7 +109,7 @@ export default class OperationService {
     })
   }
 
-  async findOne (operationId: number, user?: User, options: FindOptions = {}): Promise<Model<Operation> | null> {
+  async findOne (operationId: number, user?: UserAttributes, options: FindOptions = {}): Promise<Model<Operation> | null> {
     options.where = {
       id: operationId
     }
@@ -118,7 +120,7 @@ export default class OperationService {
     return operation
   }
 
-  async update (operationId: number, user: User, data: OperationUpdateInput): Promise<boolean> {
+  async update (operationId: number, user: UserAttributes, data: OperationUpdateInput): Promise<boolean> {
     const operation = await this.findOne(operationId, user)
     if (operation == null) {
       throw boom.notFound('Operation not found')
@@ -134,7 +136,7 @@ export default class OperationService {
     return affectedRows[0] !== 0
   }
 
-  async getBalances (range: BalanceRange = BalanceRange.THIS_MONTH, user: User): Promise<Balance> {
+  async getBalances (range: BalanceRange = BalanceRange.THIS_MONTH, user: UserAttributes): Promise<Balance> {
     const { from, to } = generateDates(range)
     // TODO: return something different if there are no operations to make balance cuac
 
@@ -166,7 +168,7 @@ export default class OperationService {
     }
   }
 
-  async getGeneralBalance (user: User): Promise<any> {
+  async getGeneralBalance (user: UserAttributes): Promise<any> {
     const { income, outflow } = await this.getBalances(BalanceRange.THIS_MONTH, user)
     return {
       balance: income + outflow,

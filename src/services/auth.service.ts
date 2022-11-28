@@ -2,12 +2,13 @@ import boom from '@hapi/boom'
 import sequelize from '../lib/sequelize'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { UserCreationAttributes, UserLoginAttributes } from '../../types'
+import { CreateUserDto, LoginUserDto } from '../types/user.model'
 import { EMAIL_EXISTS, INVALID_FIELDS } from '../constants/messages'
 import { JWT_SECRET } from '../config'
+import { ReturnedToken } from '../types/auth.model'
 // import model from '../db/models/user.model'
 export default class AuthService {
-  async register (data: UserCreationAttributes): Promise<{}> {
+  async register (data: CreateUserDto): Promise<{}> {
     const user = await sequelize.models.User.findOne({ where: { email: data.email } })
     if (user !== null) {
       throw boom.badRequest(EMAIL_EXISTS)
@@ -22,7 +23,7 @@ export default class AuthService {
     }
   }
 
-  async login (data: UserLoginAttributes): Promise<any> {
+  async login (data: LoginUserDto): Promise<ReturnedToken> {
     const { email, password } = data
     const user: any = await sequelize.models.User.findOne({ where: { email } })
     if (user == null) {
