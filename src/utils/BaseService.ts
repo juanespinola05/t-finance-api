@@ -1,8 +1,4 @@
 import { ModelStatic } from 'sequelize'
-import sequelize from '../lib/sequelize'
-
-const { models } = sequelize
-const { Operation } = models
 
 export default class BaseService<M extends ModelStatic<any>> {
   constructor (
@@ -17,8 +13,4 @@ export default class BaseService<M extends ModelStatic<any>> {
     })
     return foo
   }
-}
-
-export class OperationService extends BaseService<typeof Operation> {
-
 }
