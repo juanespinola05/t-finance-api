@@ -38,6 +38,7 @@ export const limitSchema: ModelAttributes = {
 }
 
 export class Limit extends Model<InferAttributes<Limit>, InferCreationAttributes<Limit>> {
+  declare id: number
   static associate (sequelize: Sequelize): void {
     this.belongsTo(sequelize.models.User, {
       as: 'user'
@@ -49,7 +50,7 @@ export class Limit extends Model<InferAttributes<Limit>, InferCreationAttributes
       sequelize,
       modelName: 'Limit',
       tableName: TABLE_NAME,
-      timestamps: false
+      timestamps: true
     }
   }
 }
