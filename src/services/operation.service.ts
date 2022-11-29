@@ -1,22 +1,23 @@
 import boom from '@hapi/boom'
-import { FindOptions, Model, Op, WhereOptions } from 'sequelize'
+import { Op, WhereOptions } from 'sequelize'
 import { BalanceRange } from '../../types'
 import { Balance, CreateOperationDto, OperationOutputBase, OperationType, OperationUpdateInput } from '../types/operation.model'
+import { Operation } from '../db/models/operation.model'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
 import { months, monthNames } from '../constants/months'
-import { Operation } from '../db/models/operation.model'
 import generateDates from '../helpers/generateDates'
 import sequelize from '../lib/sequelize'
 import { UserAttributes } from '../types/user.model'
+import BaseService from '../utils/BaseService'
 
-const { models } = sequelize
-export default class OperationService {
+const { models: { Operation: OperationCtor, Category } } = sequelize
+export default class OperationService extends BaseService<typeof OperationCtor> {
   async create (data: CreateOperationDto, user: UserAttributes): Promise<Operation> {
     const isOutflow = data.type === OperationType.OUTFLOW
     const transaction = await sequelize.transaction()
     let category: any
     if (isOutflow) {
-      category = await models.Category.findOne({
+      category = await Category.findOne({
         transaction,
         where: {
           tagname: data.category
@@ -24,7 +25,7 @@ export default class OperationService {
       })
       if (category === null) throw boom.notFound('Category not found')
     }
-    const operation = await models.Operation.create({
+    const operation = await OperationCtor.create({
       ...data,
       userId: user.id
     }, { transaction })
@@ -59,7 +60,7 @@ export default class OperationService {
       whereOptions.type = type
     }
 
-    const operations = await models.Operation.findAll({
+    const operations = await OperationCtor.findAll({
       where: whereOptions
     })
     return operations.map(({ dataValues: { id, concept, amount, type, date, createdAt } }) => ({
@@ -73,7 +74,11 @@ export default class OperationService {
   }
 
   async get (operationId: number, user: UserAttributes): Promise<OperationOutputBase> {
-    const operation = await this.findOne(operationId, user, {
+    const operation = await this.findOne({
+      where: {
+        id: operationId,
+        userId: user.id
+      },
       include: ['category'] // todo return category as well
     })
     if (operation === null) {
@@ -101,7 +106,7 @@ export default class OperationService {
   }
 
   async delete (id: string, user: UserAttributes): Promise<void> {
-    await models.Operation.destroy({
+    await OperationCtor.destroy({
       where: {
         id,
         userId: user.id
@@ -109,26 +114,15 @@ export default class OperationService {
     })
   }
 
-  async findOne (operationId: number, user?: UserAttributes, options: FindOptions = {}): Promise<Model<Operation> | null> {
-    options.where = {
-      id: operationId
-    }
-    if (user !== undefined) {
-      options.where.userId = user.id
-    }
-    const operation = await models.Operation.findOne(options)
-    return operation
-  }
-
   async update (operationId: number, user: UserAttributes, data: OperationUpdateInput): Promise<boolean> {
-    const operation = await this.findOne(operationId, user)
+    const operation = await this.findOne({ where: { id: operationId, userId: user.id } })
     if (operation == null) {
       throw boom.notFound('Operation not found')
     }
     if (data.type === OperationType.INCOME) {
       data.categoryId = null
     }
-    const affectedRows = await models.Operation.update(data, {
+    const affectedRows = await OperationCtor.update(data, {
       where: {
         id: operationId
       }
@@ -148,14 +142,14 @@ export default class OperationService {
       }
     }
 
-    const totalIncome = await models.Operation.sum('amount', {
+    const totalIncome = await OperationCtor.sum('amount', {
       where: {
         ...options,
         type: OperationType.INCOME
       }
     })
 
-    const totalOutflow = await models.Operation.sum('amount', {
+    const totalOutflow = await OperationCtor.sum('amount', {
       where: {
         ...options,
         type: OperationType.OUTFLOW
