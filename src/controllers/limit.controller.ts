@@ -18,7 +18,7 @@ export const postLimitController = async (req: Request, res: Response, next: Nex
 export const getLimitController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { user: { id } } = req
   try {
-    const limit = await service.findOne(+id)
+    const limit = await service.findOne({ id })
     res.status(200).json(limit)
   } catch (error) {
     next(error)

@@ -1,15 +1,13 @@
-import { ModelStatic } from 'sequelize'
+import { ModelStatic, WhereOptions } from 'sequelize'
 
 export default class BaseService<M extends ModelStatic<any>> {
   constructor (
     protected model: M
   ) {}
 
-  async findOne (id: number): Promise<M | null> {
+  async findOne (options: WhereOptions): Promise<M | null> {
     const foo = await this.model.findOne({
-      where: {
-        id
-      }
+      where: options
     })
     return foo
   }
