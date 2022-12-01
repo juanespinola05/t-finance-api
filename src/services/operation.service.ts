@@ -130,6 +130,24 @@ export default class OperationService extends BaseService<typeof OperationCtor> 
     return affectedRows[0] !== 0
   }
 
+  async getIncomeBalance (options: WhereOptions): Promise<number> {
+    return await OperationCtor.sum('amount', {
+      where: {
+        ...options,
+        type: OperationType.INCOME
+      }
+    })
+  }
+
+  async getOutflowBalance (options: WhereOptions): Promise<number> {
+    return await OperationCtor.sum('amount', {
+      where: {
+        ...options,
+        type: OperationType.OUTFLOW
+      }
+    })
+  }
+
   async getBalances (range: BalanceRange = BalanceRange.THIS_MONTH, user: UserAttributes): Promise<Balance> {
     const { from, to } = generateDates(range)
     // TODO: return something different if there are no operations to make balance cuac
@@ -142,19 +160,8 @@ export default class OperationService extends BaseService<typeof OperationCtor> 
       }
     }
 
-    const totalIncome = await OperationCtor.sum('amount', {
-      where: {
-        ...options,
-        type: OperationType.INCOME
-      }
-    })
-
-    const totalOutflow = await OperationCtor.sum('amount', {
-      where: {
-        ...options,
-        type: OperationType.OUTFLOW
-      }
-    })
+    const totalIncome = await this.getIncomeBalance(options)
+    const totalOutflow = await this.getOutflowBalance(options)
 
     return {
       income: totalIncome,
