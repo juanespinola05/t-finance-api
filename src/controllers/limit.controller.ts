@@ -24,3 +24,13 @@ export const getLimitController = async (req: Request, res: Response, next: Next
     next(error)
   }
 }
+
+export const getLimitStateController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { user: { id } } = req
+  try {
+    const state = await service.getState(+id)
+    res.status(200).json({ ok: true, state })
+  } catch (error) {
+    next(error)
+  }
+}
