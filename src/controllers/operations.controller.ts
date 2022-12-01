@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { BalanceRange } from '../../types'
+import { Operation } from '../db/models/operation.model'
 import OperationService from '../services/operation.service'
 
-const service = new OperationService()
+const service = new OperationService(Operation)
 
 export const postOperationController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { body, user } = req
