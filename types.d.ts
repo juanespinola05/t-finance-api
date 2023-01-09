@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 declare global {
   namespace Express {
     export interface Request {
@@ -19,4 +21,14 @@ export const enum BalanceRange {
   LAST_MONTH = 'lastmonth',
   LAST_WEEK = 'lastweek',
   THIS_MONTH = 'thismonth'
+}
+
+export interface Period {
+  year: number
+  month: number
+}
+
+export interface PeriodParams extends Omit<Request['params'], ''> {
+  year: string
+  month: string
 }
