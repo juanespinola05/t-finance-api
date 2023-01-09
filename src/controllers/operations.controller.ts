@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { BalanceRange } from '../../types'
+import { BalanceRange, PeriodParams } from '../../types'
 import { Operation } from '../db/models/operation.model'
 import OperationService from '../services/operation.service'
 
@@ -69,11 +69,12 @@ export const updateOperationController = async (req: Request, res: Response, nex
   }
 }
 
-export const getBalanceController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getBalanceController = async (req: Request<{}, {}, {}, { range: BalanceRange }>, res: Response, next: NextFunction): Promise<void> => {
   const { range } = req.query
   const { user } = req
+
   try {
-    const { income, outflow } = await service.getBalances(range as BalanceRange, user)
+    const { income, outflow } = await service.getBalances(range, user)
     res.status(200).json({ income, outflow })
   } catch (error) {
     next(error)
@@ -86,6 +87,22 @@ export const getGeneralBalanceController = async (req: Request, res: Response, n
     const balance = await service.getGeneralBalance(user)
     console.log(balance)
     res.status(200).json(balance)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getBalanceByPeriodController = async (req: Request<PeriodParams>, res: Response, next: NextFunction): Promise<void> => {
+  const { user } = req
+  const { year, month } = req.params
+  const period = { year: +year, month: +month }
+
+  try {
+    const balance = await service.getBalances(period, user)
+    res.status(200).json({
+      income: balance.income ?? 0,
+      outflow: balance.outflow ?? 0
+    })
   } catch (error) {
     next(error)
   }

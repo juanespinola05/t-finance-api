@@ -1,6 +1,6 @@
 import boom from '@hapi/boom'
 import { Op, WhereOptions } from 'sequelize'
-import { BalanceRange } from '../../types'
+import { BalanceRange, Period } from '../../types'
 import { Balance, CreateOperationDto, OperationOutputBase, OperationType, OperationUpdateInput } from '../types/operation.model'
 import { Operation } from '../db/models/operation.model'
 import { SERVER_UNAVAILABLE } from '../constants/messages'
@@ -148,9 +148,20 @@ export default class OperationService extends BaseService<typeof OperationCtor> 
     })
   }
 
-  async getBalances (range: BalanceRange = BalanceRange.THIS_MONTH, user: UserAttributes): Promise<Balance> {
-    const { from, to } = generateDates(range)
+  getBalances (range: BalanceRange, user: UserAttributes): Promise<Balance>
+  getBalances (period: Period, user: UserAttributes): Promise<Balance>
+
+  async getBalances (period: BalanceRange | Period, user: UserAttributes): Promise<Balance> {
+    let date
+
+    if (typeof period === 'string') {
+      date = generateDates(period)
+    } else {
+      date = generateDates(period)
+    }
+    const { from, to } = date
     // TODO: return something different if there are no operations to make balance cuac
+    console.log(date)
 
     const options: WhereOptions = {
       userId: user.id,
@@ -159,9 +170,9 @@ export default class OperationService extends BaseService<typeof OperationCtor> 
         [Op.lte]: to
       }
     }
-
     const totalIncome = await this.getIncomeBalance(options)
     const totalOutflow = await this.getOutflowBalance(options)
+    console.log({ totalIncome, totalOutflow })
 
     return {
       income: totalIncome,

@@ -39,6 +39,11 @@ export const getOperationsByMonth = Joi.object({
   month: Joi.number().min(0).max(11) // january: 0 december: 11
 })
 
+export const getOperationsByPeriod = Joi.object({
+  month: Joi.number().min(0).max(11).required(), // january: 0 december: 11
+  year: Joi.number().min(2000).required()
+})
+
 export const typeQueryParam = Joi.object({
   type: Joi.string().pattern(/income|outflow/i)
 })
@@ -55,5 +60,5 @@ export const updateOperation = Joi.object({
 })
 
 export const getBalanceSchema = Joi.object({
-  range: Joi.string().pattern(/lastmonth|thismonth|lastweek/mi)
+  range: Joi.string().pattern(/lastmonth|thismonth|lastweek/mi).required()
 })
