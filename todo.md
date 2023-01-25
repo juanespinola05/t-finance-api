@@ -10,3 +10,4 @@
 - [] Add user ID to jwt payload to improve attachUser
 - [] Some sort of catch async function to avoid 23123 trycatch
 - [] Standarize responses with fn
+- [] Avoid 500 json parse error

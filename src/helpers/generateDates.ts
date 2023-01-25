@@ -1,10 +1,18 @@
-import { BalanceRange } from '../../types'
+import { BalanceRange, Period } from '../../types'
 import { months } from '../constants/months'
 import setDateToZero from './setTimeToZero'
 
 interface RangeDates {
   from: Date
   to: Date
+}
+
+const rangeFromPeriod = ({ month, year }: Period): RangeDates => {
+  const from = setDateToZero(new Date(`${year}-${month}-01`))
+  const to = new Date(from)
+  to.setMonth(month + 1)
+
+  return { from, to }
 }
 
 const lastMonthRange = (): RangeDates => {
@@ -37,7 +45,10 @@ const thisMonthRange = (): RangeDates => {
   }
 }
 
-const generateDates = (range: BalanceRange): RangeDates => {
+function generateDates (range: BalanceRange): RangeDates
+function generateDates (period: Period): RangeDates
+
+function generateDates (range: BalanceRange | Period): RangeDates {
   switch (range) {
     case BalanceRange.LAST_MONTH:
       return lastMonthRange()
@@ -46,7 +57,7 @@ const generateDates = (range: BalanceRange): RangeDates => {
     case BalanceRange.THIS_MONTH:
       return thisMonthRange()
     default:
-      return lastMonthRange()
+      return rangeFromPeriod(range)
   }
 }
 
