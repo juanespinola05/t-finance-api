@@ -1,12 +1,10 @@
-import boom from '@hapi/boom'
 import { Op, WhereOptions } from 'sequelize'
 import { BalanceRange, PrimaryKey } from '../../types'
-import { NO_LIMIT_CREATED } from '../constants/messages'
 import { Operation } from '../db/models/operation.model'
 import { User } from '../db/models/user.model'
 import generateDates from '../helpers/generateDates'
 import sequelize from '../lib/sequelize'
-import { LimitAttributes } from '../types/limit.model'
+import { LimitAttributes, LimitState } from '../types/limit.model'
 import BaseService from '../utils/BaseService'
 import OperationService from './operation.service'
 const { models } = sequelize
@@ -24,10 +22,10 @@ export default class LimitService extends BaseService<typeof Limit> {
     return limit[1] !== null
   }
 
-  async getState (id: PrimaryKey): Promise<any> {
-    const limit = await this.findOne({ attributes: ['amount'], where: { userId: id } })
+  async getState (id: PrimaryKey): Promise<LimitState> {
+    const limit: any = await this.findOne({ attributes: ['amount'], where: { userId: id } })
     if (limit === null) {
-      throw boom.notFound(NO_LIMIT_CREATED)
+      return { amount: 0, outflowBalance: 0 }
     }
     const { from, to } = generateDates(BalanceRange.THIS_MONTH)
 
@@ -40,7 +38,7 @@ export default class LimitService extends BaseService<typeof Limit> {
     }
     const outflowBalance = await operationService.getOutflowBalance(options)
     return {
-      limit,
+      amount: limit?.amount ?? 0,
       outflowBalance: outflowBalance ?? 0
     }
   }

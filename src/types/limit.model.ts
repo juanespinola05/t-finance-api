@@ -5,4 +5,8 @@ export interface LimitAttributes extends BaseModelAttributes {
   amount: number
 }
 
+export interface LimitState extends Pick<LimitAttributes, 'amount'> {
+  outflowBalance: number
+}
+
 export interface LimitInstance extends Model, LimitAttributes {}
