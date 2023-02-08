@@ -9,6 +9,7 @@ import { ReturnedToken } from '../types/auth.model'
 // import model from '../db/models/user.model'
 export default class AuthService {
   async register (data: CreateUserDto): Promise<{}> {
+    data.email = data.email.toLowerCase()
     const user = await sequelize.models.User.findOne({ where: { email: data.email } })
     if (user !== null) {
       throw boom.badRequest(EMAIL_EXISTS)
