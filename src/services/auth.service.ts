@@ -19,8 +19,10 @@ export default class AuthService {
       ...data,
       password: bcrypt.hashSync(data.password, 10)
     })
+
     return {
-      ok: true
+      ok: true,
+      token: this.generateJWT({ email: data.email })
     }
   }
 
